@@ -10,7 +10,7 @@ return {
 		"williamboman/mason-lspconfig.nvim",
 		config = function()
 			require("mason-lspconfig").setup({
-				ensure_installed = { "lua_ls","html", "tsserver", "tailwindcss" },
+				ensure_installed = { "lua_ls", "html", "tsserver", "tailwindcss" },
 			})
 		end,
 	},
@@ -22,17 +22,17 @@ return {
 
 			local lspconfig = require("lspconfig")
 			lspconfig.lua_ls.setup({
-			capabilities=capabilities
+				capabilities = capabilities,
 			})
 			lspconfig.tsserver.setup({
-			capabilities=capabilities,
+				capabilities = capabilities,
 				autostart = true,
 			})
 			lspconfig.html.setup({
-			capabilities=capabilities
+				capabilities = capabilities,
 			})
 			lspconfig.tailwindcss.setup({
-			capabilities=capabilities
+				capabilities = capabilities,
 			})
 			vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
 			vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
