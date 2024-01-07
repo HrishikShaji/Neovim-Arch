@@ -18,7 +18,7 @@ return {
 		"neovim/nvim-lspconfig",
 		lazy = false,
 		config = function()
-			local _border = "bordered"
+			local _border = "single"
 			require("lspconfig.ui.windows").default_options = {
 				border = _border,
 			}
@@ -45,9 +45,23 @@ return {
 				on_attach = on_attach,
 				capabilities = capabilities,
 			})
-			lspconfig.rust_analyzer.setup({
-				on_attach = on_attach,
-				capabilities = capabilities,
+			local mason_registry = require("mason-registry")
+
+			local codelldb = mason_registry.get_package("codelldb")
+			local extension_path = codelldb:get_install_path() .. "/extension/"
+			local codelldb_path = extension_path .. "adapter/codelldb"
+			local liblldb_path = extension_path .. "lldb/lib/liblldb.dylib"
+			local rt = require("rust-tools")
+			rt.setup({
+				dap = {
+					adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path,
+						liblldb_path),
+				},
+
+				server = {
+					capabilities = capabilities,
+					on_attach = on_attach,
+				},
 			})
 		end,
 	},
