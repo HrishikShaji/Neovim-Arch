@@ -10,7 +10,7 @@ return {
 		"williamboman/mason-lspconfig.nvim",
 		config = function()
 			require("mason-lspconfig").setup({
-				ensure_installed = { "lua_ls", "html", "tsserver", "tailwindcss" },
+				ensure_installed = { "lua_ls", "html", "tsserver", "tailwindcss", "prismals" },
 			})
 		end,
 	},
@@ -27,6 +27,15 @@ return {
 				vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = bufnr })
 				vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = bufnr })
 				vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { bufnr = bufnr })
+				vim.keymap.set("n", "!", function()
+					vim.diagnostic.open_float()
+				end, opts)
+				vim.keymap.set("n", "[d", function()
+					vim.diagnostic.goto_next()
+				end, opts)
+				vim.keymap.set("n", "]d", function()
+					vim.diagnostic.goto_prev()
+				end, opts)
 			end
 			local lspconfig = require("lspconfig")
 			lspconfig.lua_ls.setup({
@@ -45,6 +54,10 @@ return {
 				on_attach = on_attach,
 				capabilities = capabilities,
 			})
+			lspconfig.prismals.setup({
+				on_attach = on_attach,
+				capabilities = capabilities,
+			})
 			local mason_registry = require("mason-registry")
 
 			local codelldb = mason_registry.get_package("codelldb")
@@ -54,8 +67,7 @@ return {
 			local rt = require("rust-tools")
 			rt.setup({
 				dap = {
-					adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path,
-						liblldb_path),
+					adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path, liblldb_path),
 				},
 
 				server = {
